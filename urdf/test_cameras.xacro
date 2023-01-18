@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot name="test_cameras" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <material name="yellow">
+    <color rgba="1 1 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0 0 1 1" />
+  </material>
+
+  <xacro:macro name="pan_camera" params="name y_offset">
+    <link name="${name}_link">
+      <visual>
+        <geometry>
+          <cylinder length="0.4" radius="0.025"/>
+        </geometry>
+        <material name="blue" />
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="0.4" radius="0.04"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0.09"/>
+      </collision>
+      <inertial>
+        <mass value="1" />
+        <inertia ixx="1." ixy="0.0" ixz="0.0" iyy="1." iyz="0.0" izz="1." />
+      </inertial>
+    </link>
+
+    <joint name="${name}_joint" type="revolute">
+      <origin xyz="0 ${y_offset} 0.2"/>
+      <axis xyz="0 0 1" />
+      <parent link="base_link"/>
+      <child link="${name}_link"/>
+      <limit effort="300" velocity="0.1" lower="-3.14" upper="3.14"/>
+      <dynamics damping="50" friction="1"/>
+    </joint>
+
+    <!-- Camera -->
+    <link name="${name}_camera">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.05 0.05 0.05"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.05 0.05 0.05"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+
+    <joint name="${name}_cam_joint" type="fixed">
+      <origin xyz="0 0 0.225" rpy="0 0 0"/>
+      <parent link="${name}_link"/>
+      <child link="${name}_camera"/>
+    </joint>
+  </xacro:macro>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.50 1.00 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="yellow" />
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.00 0.50 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="1" />
+      <inertia ixx="1." ixy="0.0" ixz="0.0" iyy="1." iyz="0.0" izz="1." />
+    </inertial>
+  </link>
+
+  <xacro:pan_camera name="left" y_offset="0.25" />
+  <xacro:pan_camera name="right" y_offset="-0.25" />
+
+</robot>
+
