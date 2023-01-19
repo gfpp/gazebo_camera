@@ -78,6 +78,18 @@
       <material>Gazebo/Red</material>
     </gazebo>
 
+    <!-- Transmission block -->
+    <transmission name="tran_${name}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_${name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
     <!-- Gazebo camera plugin -->
     <gazebo reference="${name}_camera">
       <sensor type="camera" name="${name}_camera">
@@ -105,7 +117,7 @@
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <cameraName>imove_camera/${name}_camera</cameraName>
+          <cameraName>test_camera/${name}_camera</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>camera</frameName>
@@ -144,5 +156,10 @@
   <xacro:pan_camera name="left" y_offset="0.25" />
   <xacro:pan_camera name="right" y_offset="-0.25" />
 
-</robot>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/test_cameras</robotNamespace>
+    </plugin>
+  </gazebo>
 
+</robot>
